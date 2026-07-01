@@ -1,0 +1,2 @@
+[console_scripts]
+crispr-design = crispr_design.cli:cli

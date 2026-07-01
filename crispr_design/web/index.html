@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRISPR Design Studio — Clinical-Grade gRNA Design</title>
+  <meta name="description" content="Professional gRNA design, scoring, and off-target analysis platform." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧬</text></svg>" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+
+  <!-- ════════════════ HEADER ════════════════ -->
+  <header id="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="logo-dna" aria-hidden="true">
+          <span class="dna-helix"></span>
+        </span>
+        <div>
+          <h1 class="brand-title">CRISPR <span class="brand-accent">Design Studio</span></h1>
+          <p class="brand-sub">Clinical-Grade gRNA Design &amp; Off-Target Analysis</p>
+        </div>
+      </div>
+      <nav class="header-nav">
+        <button class="tab-btn active" data-tab="design" onclick="switchTab('design')">
+          <span class="tab-icon">&#9877;</span> Design
+        </button>
+        <button class="tab-btn" data-tab="batch" onclick="switchTab('batch')">
+          <span class="tab-icon">&#9881;</span> Batch
+        </button>
+        <button class="tab-btn" data-tab="scan" onclick="switchTab('scan')">
+          <span class="tab-icon">&#9878;</span> Off-Target
+        </button>
+        <button class="tab-btn" data-tab="score" onclick="switchTab('score')">
+          <span class="tab-icon">&#128176;</span> Scoring
+        </button>
+      </nav>
+      <div class="header-status">
+        <span id="api-status" class="status-pill offline">
+          <span class="pulse-dot"></span> Offline
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ════════════════ DESIGN TAB ════════════════ -->
+    <section id="tab-design" class="tab-panel active">
+
+      <!-- Input Panel -->
+      <div class="panel card">
+        <div class="panel-header">
+          <h2 class="panel-title">&#9877; Design Guide RNAs</h2>
+          <p class="panel-desc">Input a DNA target sequence to discover and rank optimal gRNAs with automated off-target analysis.</p>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="design-seq">DNA Target Sequence</label>
+            <div class="input-wrap">
+              <textarea id="design-seq" rows="4" spellcheck="false"
+                placeholder="Paste genomic DNA sequence (minimum 21 bp)&#10;Example: ATGCGTACGTACGATCGATCGTACGTACGATCGATCGTAGGACGTA..."></textarea>
+              <span class="char-count"><span id="seq-count">0</span> bp</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="design-enzyme">Cas9 Variant</label>
+            <select id="design-enzyme">
+              <optgroup label="Wild-Type &amp; Standard">
+                <option value="spcas9" selected>SpCas9 — <em>S. pyogenes</em> (NGG)</option>
+                <option value="hificas9">SpCas9-HF1 — High Fidelity</option>
+              </optgroup>
+              <optgroup label="Engineered Variants">
+                <option value="spcas9n">SpCas9-evoFAN — Enhanced Fidelity</option>
+                <option value="spcas9v">SpCas9-HySt — Hypersensitive</option>
+                <option value="xmacas9">SpCas9-NG / xMACs</option>
+              </optgroup>
+              <optgroup label="Alternative Enzymes">
+                <option value="sacas9">SaCas9 — <em>S. aureus</em> (NNGRRT)</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="design-mismatches">Max Mismatches: <strong id="design-mismatch-val">3</strong></label>
+            <div class="slider-wrap">
+              <input type="range" id="design-mismatches" min="0" max="5" value="3"
+                oninput="document.getElementById('design-mismatch-val').textContent=this.value" />
+              <div class="slider-labels"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="design-maxresults">Max Guides</label>
+            <input type="number" id="design-maxresults" value="50" min="1" max="1000" />
+          </div>
+
+          <div class="form-group">
+            <label for="design-genome">Reference Genome</label>
+            <select id="design-genome">
+              <option value="">Default (Test Genome)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="design-scoring">Scoring Algorithm</label>
+            <select id="design-scoring">
+              <option value="all" selected>All Available (Doench 2014/2016, MIT-CF, CFD)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-primary" id="btn-design" onclick="runDesign()">
+            <span class="btn-icon">&#9881;</span> Design Guides
+          </button>
+          <button class="btn-outline" onclick="loadSampleSequence()">
+            <span class="btn-icon">&#128203;</span> Load Sample
+          </button>
+          <button class="btn-outline" onclick="clearDesign()">
+            <span class="btn-icon">&#10005;</span> Clear
+          </button>
+        </div>
+      </div>
+
+      <!-- Design Results -->
+      <div id="design-results" class="panel card hidden">
+        <div class="panel-header">
+          <h2 class="panel-title">&#128202; Design Results</h2>
+        </div>
+        <div id="design-stats" class="stats-row"></div>
+
+        <!-- Summary bar chart -->
+        <div id="design-summary" class="summary-strip hidden"></div>
+
+        <div class="table-wrap">
+          <table id="design-table">
+            <thead>
+              <tr>
+                <th onclick="sortTable('design-table',0)" class="sort-col">#</th>
+                <th onclick="sortTable('design-table',1)" class="sort-col">Guide Sequence</th>
+                <th>PAM</th>
+                <th onclick="sortTable('design-table',3)" class="sort-col">Doench 2016</th>
+                <th onclick="sortTable('design-table',4)" class="sort-col">MIT-CF</th>
+                <th onclick="sortTable('design-table',5)" class="sort-col">CFD</th>
+                <th onclick="sortTable('design-table',6)" class="sort-col">Off-Targets</th>
+                <th onclick="sortTable('design-table',7)" class="sort-col">Specificity</th>
+                <th onclick="sortTable('design-table',8)" class="sort-col">Score</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="design-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ BATCH TAB ════════════════ -->
+    <section id="tab-batch" class="tab-panel">
+      <div class="panel card">
+        <div class="panel-header">
+          <h2 class="panel-title">&#9881;&#65039; Batch Processing</h2>
+          <p class="panel-desc">Score and analyze multiple pre-defined gRNA sequences in a single request. One sequence per line (20 bp each).</p>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="batch-seqs">gRNA Sequences (one per line)</label>
+            <div class="input-wrap">
+              <textarea id="batch-seqs" rows="8" spellcheck="false"
+                placeholder="ATGCGTACGTACGATCGATC&#10;GCTAGCTAGCTAGCTAGCTAGA&#10;..."></textarea>
+              <span class="char-count"><span id="batch-count">0</span> sequences</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="batch-enzyme">Cas Enzyme</label>
+            <select id="batch-enzyme">
+              <option value="spcas9" selected>SpCas9 (NGG)</option>
+              <option value="hificas9">HiFi Cas9</option>
+              <option value="spcas9n">SpCas9-evoFAN</option>
+              <option value="spcas9v">SpCas9-HySt</option>
+              <option value="xmacas9">SpCas9-NG</option>
+              <option value="sacas9">SaCas9</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="batch-mismatches">Max Mismatches: <strong id="batch-mismatch-val">3</strong></label>
+            <div class="slider-wrap">
+              <input type="range" id="batch-mismatches" min="0" max="5" value="3"
+                oninput="document.getElementById('batch-mismatch-val').textContent=this.value" />
+            </div>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label class="toggle-label"><input type="checkbox" id="batch-scores" checked /> Include Scores</label>
+            <label class="toggle-label"><input type="checkbox" id="batch-offtargets" checked /> Include Off-Targets</label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-primary" id="btn-batch" onclick="runBatch()">
+            <span class="btn-icon">&#9881;</span> Process Batch
+          </button>
+        </div>
+      </div>
+
+      <div id="batch-results" class="panel card hidden">
+        <div class="panel-header">
+          <h2 class="panel-title">&#128202; Batch Results</h2>
+        </div>
+        <div id="batch-stats" class="stats-row"></div>
+        <div class="table-wrap">
+          <table id="batch-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Guide Sequence</th>
+                <th>PAM</th>
+                <th>Doench 2016</th>
+                <th>Off-Targets</th>
+                <th>Specificity</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody id="batch-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ SCAN TAB ════════════════ -->
+    <section id="tab-scan" class="tab-panel">
+      <div class="panel card">
+        <div class="panel-header">
+          <h2 class="panel-title">&#9878; Off-Target Genome Scan</h2>
+          <p class="panel-desc">Scan the reference genome for potential off-target binding sites of a specific gRNA sequence.</p>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="scan-seq">Guide Sequence (20 bp)</label>
+            <input type="text" id="scan-seq" placeholder="e.g. ATGCGTACGTACGATCGATC" maxlength="25" spellcheck="false" />
+          </div>
+
+          <div class="form-group">
+            <label for="scan-pam">PAM Sequence</label>
+            <input type="text" id="scan-pam" value="NGG" placeholder="NGG" />
+          </div>
+
+          <div class="form-group">
+            <label for="scan-enzyme">Cas Enzyme</label>
+            <select id="scan-enzyme">
+              <option value="spcas9" selected>SpCas9</option>
+              <option value="hificas9">HiFi Cas9</option>
+              <option value="spcas9n">SpCas9-evoFAN</option>
+              <option value="spcas9v">SpCas9-HySt</option>
+              <option value="xmacas9">SpCas9-NG</option>
+              <option value="sacas9">SaCas9</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="scan-mismatches">Max Mismatches: <strong id="scan-mismatch-val">3</strong></label>
+            <div class="slider-wrap">
+              <input type="range" id="scan-mismatches" min="0" max="5" value="3"
+                oninput="document.getElementById('scan-mismatch-val').textContent=this.value" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="scan-maxresults">Max Results</label>
+            <input type="number" id="scan-maxresults" value="100" min="1" max="10000" />
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-primary" id="btn-scan" onclick="runScan()">
+            <span class="btn-icon">&#9878;</span> Scan Genome
+          </button>
+        </div>
+      </div>
+
+      <div id="scan-results" class="panel card hidden">
+        <div class="panel-header">
+          <h2 class="panel-title">&#128202; Off-Target Hits</h2>
+        </div>
+        <div id="scan-stats" class="stats-row"></div>
+
+        <div id="scan-mismatch-distribution" class="mismatch-dist hidden"></div>
+
+        <div class="table-wrap">
+          <table id="scan-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Chromosome</th>
+                <th>Position</th>
+                <th>Strand</th>
+                <th>Mismatches</th>
+                <th>Match Sequence</th>
+                <th>Mismatch Details</th>
+              </tr>
+            </thead>
+            <tbody id="scan-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ SCORE TAB ════════════════ -->
+    <section id="tab-score" class="tab-panel">
+      <div class="panel card">
+        <div class="panel-header">
+          <h2 class="panel-title">&#128176; gRNA Activity Scoring</h2>
+          <p class="panel-desc">Score a single 20 bp gRNA sequence with all available algorithms (MIT-CF, CFD, Doench 2014 &amp; 2016).</p>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="score-seq">gRNA Sequence (exactly 20 bp)</label>
+            <input type="text" id="score-seq" placeholder="e.g. ATGCGTACGTACGATCGATC" maxlength="20" spellcheck="false" />
+          </div>
+
+          <div class="form-group full-width">
+            <label for="score-target">Target Sequence <span class="optional-tag">(optional, for CFD scoring)</span></label>
+            <input type="text" id="score-target" placeholder="Leave blank to use guide sequence for perfect-match CFD" spellcheck="false" />
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-primary" id="btn-score" onclick="runScore()">
+            <span class="btn-icon">&#128176;</span> Score gRNA
+          </button>
+        </div>
+      </div>
+
+      <div id="score-results" class="panel card hidden">
+        <div class="panel-header">
+          <h2 class="panel-title">&#128202; Scoring Results</h2>
+        </div>
+        <div id="score-grid" class="score-grid"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ════════════════ OFF-TARGET DETAIL MODAL ════════════════ -->
+  <div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <h3 id="modal-title" class="panel-title"></h3>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ════════════════ STATUS BAR ════════════════ -->
+  <footer id="status-bar">
+    <span id="status-text" class="status-message">Ready</span>
+    <span id="status-timestamp"></span>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

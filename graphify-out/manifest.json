@@ -1,0 +1,142 @@
+{
+  "crispr_design/__init__.py": {
+    "mtime": 1782461021.1974697,
+    "ast_hash": "bfc42ddec2b9c9e4413e5b5ff99e12bd",
+    "semantic_hash": "bfc42ddec2b9c9e4413e5b5ff99e12bd"
+  },
+  "crispr_design/api/__init__.py": {
+    "mtime": 1782461021.2174408,
+    "ast_hash": "7fd74457385ed053b3695fa13c043353",
+    "semantic_hash": "7fd74457385ed053b3695fa13c043353"
+  },
+  "crispr_design/api/server.py": {
+    "mtime": 1782461711.2675998,
+    "ast_hash": "867ef24d4220eb1ac155dcdbf3ea3fee",
+    "semantic_hash": "867ef24d4220eb1ac155dcdbf3ea3fee"
+  },
+  "crispr_design/cli.py": {
+    "mtime": 1782465329.043756,
+    "ast_hash": "93cec844bfa9233f618aca654b14ef7a",
+    "semantic_hash": "93cec844bfa9233f618aca654b14ef7a"
+  },
+  "crispr_design/core/__init__.py": {
+    "mtime": 1782461021.200441,
+    "ast_hash": "ea0110b03c50efbe448485f7387bbe7f",
+    "semantic_hash": "ea0110b03c50efbe448485f7387bbe7f"
+  },
+  "crispr_design/core/design.py": {
+    "mtime": 1782466696.314694,
+    "ast_hash": "41b9bff4d4230093b3cf986287432d30",
+    "semantic_hash": "41b9bff4d4230093b3cf986287432d30"
+  },
+  "crispr_design/core/grna.py": {
+    "mtime": 1782461021.203441,
+    "ast_hash": "985573ff919ecaf53ff4d8ed501cf5b3",
+    "semantic_hash": "985573ff919ecaf53ff4d8ed501cf5b3"
+  },
+  "crispr_design/core/off_target.py": {
+    "mtime": 1782459673.311528,
+    "ast_hash": "d348b2b8a3cd6bd3634480f7b55cdf3c",
+    "semantic_hash": "d348b2b8a3cd6bd3634480f7b55cdf3c"
+  },
+  "crispr_design/core/scoring.py": {
+    "mtime": 1782461021.1884408,
+    "ast_hash": "890e85ae7543aded06f81334f7b31ed1",
+    "semantic_hash": "890e85ae7543aded06f81334f7b31ed1"
+  },
+  "crispr_design/databases/__init__.py": {
+    "mtime": 1782461021.1894407,
+    "ast_hash": "a06bc1d16f9146ec81dfc25b848c3126",
+    "semantic_hash": "a06bc1d16f9146ec81dfc25b848c3126"
+  },
+  "crispr_design/databases/genome.py": {
+    "mtime": 1782465634.3879702,
+    "ast_hash": "8dfd4c9462ddb3fcfa84c97c0416233b",
+    "semantic_hash": "8dfd4c9462ddb3fcfa84c97c0416233b"
+  },
+  "crispr_design/reports/__init__.py": {
+    "mtime": 1782461021.1844711,
+    "ast_hash": "65042fe8506d8ec100e63f265a7773fb",
+    "semantic_hash": "65042fe8506d8ec100e63f265a7773fb"
+  },
+  "crispr_design/reports/csv_report.py": {
+    "mtime": 1782461405.5682642,
+    "ast_hash": "5eae3bbcfdfa58a6f5dcd7d6988ad0fc",
+    "semantic_hash": "5eae3bbcfdfa58a6f5dcd7d6988ad0fc"
+  },
+  "crispr_design/reports/html_report.py": {
+    "mtime": 1782461405.558264,
+    "ast_hash": "beb23b939883f8c96fd9df8dbfc639fb",
+    "semantic_hash": "beb23b939883f8c96fd9df8dbfc639fb"
+  },
+  "crispr_design/reports/json_report.py": {
+    "mtime": 1782466244.7154076,
+    "ast_hash": "6679d2ae3b66c458ec93bd2e11826058",
+    "semantic_hash": "6679d2ae3b66c458ec93bd2e11826058"
+  },
+  "crispr_design/utils/__init__.py": {
+    "mtime": 1782461021.206441,
+    "ast_hash": "d9ca6f41c4e87d8dbcb52349a713b5aa",
+    "semantic_hash": "d9ca6f41c4e87d8dbcb52349a713b5aa"
+  },
+  "crispr_design/utils/seq_utils.py": {
+    "mtime": 1782461405.5862644,
+    "ast_hash": "73916c465911ae96c4659db62c26cbe5",
+    "semantic_hash": "73916c465911ae96c4659db62c26cbe5"
+  },
+  "tests/__init__.py": {
+    "mtime": 1782462006.3645282,
+    "ast_hash": "a640221802e2f85b5e49ea927c5606f9",
+    "semantic_hash": "a640221802e2f85b5e49ea927c5606f9"
+  },
+  "tests/conftest.py": {
+    "mtime": 1782462006.3594663,
+    "ast_hash": "46d4fa5747c7a6317c2ca33f247c40db",
+    "semantic_hash": "46d4fa5747c7a6317c2ca33f247c40db"
+  },
+  "tests/test_api.py": {
+    "mtime": 1782467251.6667233,
+    "ast_hash": "f0da9bb05f177a31c510edeb2d4c39f4",
+    "semantic_hash": "f0da9bb05f177a31c510edeb2d4c39f4"
+  },
+  "tests/test_cli.py": {
+    "mtime": 1782463338.22688,
+    "ast_hash": "87c7af39cc2452eb740244931288353f",
+    "semantic_hash": "87c7af39cc2452eb740244931288353f"
+  },
+  "tests/test_design.py": {
+    "mtime": 1782463338.233612,
+    "ast_hash": "796ac1bfa5330c1d760fb94ecf842956",
+    "semantic_hash": "796ac1bfa5330c1d760fb94ecf842956"
+  },
+  "tests/test_genome.py": {
+    "mtime": 1782463338.21188,
+    "ast_hash": "f7f98cb79e2c959181a59f4c0370c2f2",
+    "semantic_hash": "f7f98cb79e2c959181a59f4c0370c2f2"
+  },
+  "tests/test_grna.py": {
+    "mtime": 1782467251.752724,
+    "ast_hash": "24f9402b8dd4e0cea7d34b9b7af336c5",
+    "semantic_hash": "24f9402b8dd4e0cea7d34b9b7af336c5"
+  },
+  "tests/test_off_target.py": {
+    "mtime": 1782467251.8347244,
+    "ast_hash": "c72b811e4f4825baa6e6c42382ccc827",
+    "semantic_hash": "c72b811e4f4825baa6e6c42382ccc827"
+  },
+  "tests/test_reports.py": {
+    "mtime": 1782463338.2358801,
+    "ast_hash": "ee6a874cc306d6f6174ab100986a8bc9",
+    "semantic_hash": "ee6a874cc306d6f6174ab100986a8bc9"
+  },
+  "tests/test_scoring.py": {
+    "mtime": 1782467251.916725,
+    "ast_hash": "1b6946445a8a2163fedcd99015555c50",
+    "semantic_hash": "1b6946445a8a2163fedcd99015555c50"
+  },
+  "tests/test_seq_utils.py": {
+    "mtime": 1782467251.9987257,
+    "ast_hash": "cbbf92ff45ae63edd1b55ea0f43330f4",
+    "semantic_hash": "cbbf92ff45ae63edd1b55ea0f43330f4"
+  }
+}

@@ -1,0 +1,11 @@
+*.md
+*.txt
+*.yml
+*.yaml
+*.toml
+*.html
+Makefile
+Dockerfile
+graphify-out/
+data/
+*.egg-info/
