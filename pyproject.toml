@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "crispr-design"
-version = "0.1.0"
+version = "0.1.0.dev1"
 description = "CRISPR Design Studio — CLI + web tool for gRNA design and off-target prediction"
 readme = "README.md"
 license = {text = "MIT"}
